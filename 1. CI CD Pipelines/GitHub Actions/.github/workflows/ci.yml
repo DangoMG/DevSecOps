@@ -1,0 +1,11 @@
+name: Test CI Pipeline
+
+on: [push]
+
+jobs:
+  hello-world:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Echo a message
+        run: echo "🚀 CI pipeline is working!"
