@@ -1,11 +1,20 @@
-name: Test CI Pipeline
+name: Python CI
 
 on: [push]
 
 jobs:
-  hello-world:
+  test-python:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
-      - name: Echo a message
-        run: echo "🚀 CI pipeline is working!"
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Run tests
+        working-directory: myapp
+        run: |
+          python -m unittest discover
