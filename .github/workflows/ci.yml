@@ -18,3 +18,10 @@ jobs:
         working-directory: myapp
         run: |
           python -m unittest discover
+
+      - name: Install Bandit
+        run: pip install bandit
+
+      - name: Run Bandit SAST scan
+        working-directory: myapp
+        run: bandit -r .
