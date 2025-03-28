@@ -25,3 +25,15 @@ jobs:
       - name: Run Bandit SAST scan
         working-directory: myapp
         run: bandit -r .
+        
+      - name: Build Docker Image
+        working-directory: myapp
+        run: docker build -t securecalc .
+
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Run Trivy Scan
+        working-directory: myapp
+        run: trivy fs .
