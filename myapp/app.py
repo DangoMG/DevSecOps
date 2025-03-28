@@ -1,5 +1,18 @@
-def add(a, b):
-  return a + b
+from flask import Flask, request, jsonify
 
-def subtract(a, b):
-  return a - b
+app = Flask(__name__)
+
+@app.route("/add", methods=["GET"])
+def add():
+    a = int(request.args.get("a"))
+    b = int(request.args.get("b"))
+    return jsonify(result=a + b)
+
+@app.route("/subtract", methods=["GET"])
+def subtract():
+    a = int(request.args.get("a"))
+    b = int(request.args.get("b"))
+    return jsonify(result=a - b)
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0")
