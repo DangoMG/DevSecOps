@@ -10,26 +10,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 📦 Checkout repository
+    - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: 🐍 Set up Python
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
-    - name: 📥 Install Checkov & dependencies
+    - name: Install Checkov & dependencies
       run: pip install -r cloudformation-scanner/requirements.txt
 
-    - name: 🧪 Debug: Show working directory + files
+    - name: Debug - Show working directory and file tree
       run: |
-        echo "Working directory: $(pwd)"
-        ls -R
+        pwd
+        ls -la
+        ls -R cloudformation-scanner/
 
-    - name: 🔍 Run CloudScout Scan
+    - name: Run CloudScout Scan
       run: |
         python cloudformation-scanner/scanner/scan.py \
-          --path $GITHUB_WORKSPACE/cloudformation-scanner/templates \
+          --path cloudformation-scanner/templates \
           --format md \
           --fail-on high
-      continue-on-error: true  # ✅ This must be indented under the step
+      continue-on-error: true
