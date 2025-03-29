@@ -155,10 +155,19 @@ def run_scanner(path, output_format, fail_on):
     print("\n🔐 Running Gitleaks for secrets scanning...\n")
     secrets = run_gitleaks(path, result_dir)
 
-    # Always generate HTML report silently
+    # ✅ Always generate both Markdown and HTML reports
+    md_path = os.path.join(result_dir, "scan_summary.md")
+    write_markdown_summary(scan_summaries, md_path, secrets)
+    print(f"✅ Markdown report saved to: {md_path}")
+
     html_path = os.path.join(result_dir, "scan_report.html")
     generate_html(scan_summaries, secrets, html_path)
     print(f"✅ HTML report saved to: {html_path}")
+
+    # 🖨️ Optionally print JSON to terminal
+    if output_format == "json":
+        print(json.dumps({"misconfigs": scan_summaries, "secrets": secrets}, indent=2))
+
 
     # Conditionally generate and print Markdown or JSON to terminal
     if output_format == "md":
