@@ -1,8 +1,6 @@
 # DevSecOps
 All Things DevSecOps 
 
-# 🛡️ DevSecOps Journey for Cerberus Capital
-
 Welcome! This is my interactive learning repo where I deep dive into modern DevSecOps practices while preparing for an interview with Cerberus Capital Management. This isn't just a portfolio—it's a playbook, guide, and personal log.
 
 ## 🚀 Topics Covered
