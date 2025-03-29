@@ -32,4 +32,4 @@ jobs:
           --path $GITHUB_WORKSPACE/cloudformation-scanner/templates \
           --format md \
           --fail-on high
-      continue-on-error: true
+      continue-on-error: true  # ✅ This must be indented under the step
