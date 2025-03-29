@@ -1,0 +1,6 @@
+Resources:
+  PublicBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: insecure-bucket
+      AccessControl: PublicRead
