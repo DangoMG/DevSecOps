@@ -1,17 +1,19 @@
 import unittest
 from app import app
 
-class TestCalcAPI(unittest.TestCase):
+class TestCalcUI(unittest.TestCase):
     def setUp(self):
-        self.app = app.test_client()
+        self.client = app.test_client()
 
     def test_add(self):
-        response = self.app.get("/add?a=2&b=3")
-        self.assertEqual(response.json['result'], 5)
+        response = self.client.post("/", data={"a": "2", "b": "3", "operation": "add"})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Result: 5", response.data)
 
     def test_subtract(self):
-        response = self.app.get("/subtract?a=5&b=3")
-        self.assertEqual(response.json['result'], 2)
+        response = self.client.post("/", data={"a": "5", "b": "3", "operation": "subtract"})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Result: 2", response.data)
 
 if __name__ == "__main__":
     unittest.main()
