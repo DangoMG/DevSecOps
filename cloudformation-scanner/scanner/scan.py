@@ -73,9 +73,9 @@ def write_markdown_summary(reports, output_path):
         f.write("# ☁️ CloudFormation Security Scan Report\n\n")
         f.write("## ✅ Summary Table\n\n")
         f.write("| File | Passed | Failed | Critical Issues |\n")
-        f.write("|------|--------|--------|------------------|\n")
+        f.write("| ---- | ------ | ------ | --------------- |\n")
         for report in reports:
-            f.write(f"| {report['file']} | {report['passed']} | {report['failed']} | {len(report['critical_issues'])} |\n")
+            f.write(f" |  {report['file']}  |  {report['passed']}  |  {report['failed']}  |  {len(report['critical_issues'])}  |\n")
 
         f.write("\n---\n\n")
         f.write("## 🚨 Critical Findings with Remediation\n\n")
