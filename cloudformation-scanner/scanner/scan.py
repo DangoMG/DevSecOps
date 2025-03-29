@@ -6,8 +6,18 @@ import argparse
 import sys
 
 CRITICAL_CHECKS = {
-    "CKV_AWS_21": "S3 Bucket has public read permissions",
-    "CKV_AWS_57": "IAM role allows wildcard (*) actions",
+    "CKV_AWS_21": {
+        "title": "S3 Bucket has public read permissions",
+        "why": "Public buckets can expose sensitive data to the entire internet.",
+        "remediation": "Set 'AccessControl' to 'Private' or configure bucket policies to restrict access.",
+        "doc": "https://docs.bridgecrew.io/docs/s3_1-enable-bucket-private-acl"
+    },
+    "CKV_AWS_57": {
+        "title": "IAM role allows wildcard (*) actions",
+        "why": "Wildcard permissions are overly permissive and create significant risk.",
+        "remediation": "Limit IAM permissions to specific actions and resources.",
+        "doc": "https://docs.bridgecrew.io/docs/iam_4-no-wildcard-actions"
+    }
 }
 
 SEVERITY_PRIORITY = {
@@ -39,11 +49,15 @@ def summarize_scan(json_file):
 
     for result in data.get("results", {}).get("failed_checks", []):
         check_id = result.get("check_id")
-        if check_id in CRITICAL_CHECKS:
+        details = CRITICAL_CHECKS.get(check_id)
+        if details:
             critical_hits.append({
                 "check_id": check_id,
                 "resource": result.get("resource"),
-                "description": CRITICAL_CHECKS[check_id]
+                "title": details["title"],
+                "why": details["why"],
+                "remediation": details["remediation"],
+                "doc": details["doc"]
             })
 
     return {
@@ -64,10 +78,15 @@ def write_markdown_summary(reports, output_path):
             f.write(f"| {report['file']} | {report['passed']} | {report['failed']} | {len(report['critical_issues'])} |\n")
 
         f.write("\n---\n\n")
-        f.write("## 🚨 Critical Findings\n\n")
+        f.write("## 🚨 Critical Findings with Remediation\n\n")
         for report in reports:
             for issue in report['critical_issues']:
-                f.write(f"- **{issue['description']}** in `{report['file']}` → `{issue['resource']}` ({issue['check_id']})\n")
+                f.write(f"### 🔒 {issue['title']}\n")
+                f.write(f"- **File**: `{report['file']}`\n")
+                f.write(f"- **Resource**: `{issue['resource']}`\n")
+                f.write(f"- **Why it matters**: {issue['why']}\n")
+                f.write(f"- **Remediation**: {issue['remediation']}\n")
+                f.write(f"- **Docs**: [View]({issue['doc']})\n\n")
 
 def fail_based_on_severity(reports, threshold):
     highest_severity_found = "none"
@@ -95,7 +114,7 @@ def run_scanner(path, output_format, fail_on):
         for file in files:
             if file.endswith((".yaml", ".yml", ".json")):
                 full_path = os.path.join(root, file)
-                print(f"➡️ Scanning: {file}")
+                print(f"➡ Scanning: {file}")
                 report_json = scan_file(full_path, result_dir)
                 summary = summarize_scan(report_json)
                 scan_summaries.append(summary)
@@ -109,7 +128,6 @@ def run_scanner(path, output_format, fail_on):
 
     fail_based_on_severity(scan_summaries, fail_on)
 
-# 🚀 CLI Entry Point
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="CloudFormation Security Scanner")
     parser.add_argument("--path", type=str, required=True, help="Directory to scan")
