@@ -125,10 +125,20 @@ def fail_based_on_severity(reports, threshold, secrets):
         print(f"❌ Failing scan due to '{highest_severity_found}' issue found (threshold: {threshold})")
         sys.exit(1)
 
+def get_next_run_dir(base_path):
+    today = datetime.now().strftime("%Y_%m_%d")
+    i = 1
+    while True:
+        run_dir = os.path.join(base_path, f"{today}_Run_{i}")
+        if not os.path.exists(run_dir):
+            return run_dir
+        i += 1
+
 def run_scanner(path, output_format, fail_on):
     print(f"\n🔍 Scanning templates in {path}...\n")
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    result_dir = os.path.join("cloudformation-scanner", "results", timestamp)
+    base_results_dir = os.path.join("cloudformation-scanner", "results")
+    os.makedirs(base_results_dir, exist_ok=True)
+    result_dir = get_next_run_dir(base_results_dir)
     os.makedirs(result_dir, exist_ok=True)
 
     scan_summaries = []
@@ -156,6 +166,7 @@ def run_scanner(path, output_format, fail_on):
         print(json.dumps({"misconfigs": scan_summaries, "secrets": secrets}, indent=2))
 
     fail_based_on_severity(scan_summaries, fail_on, secrets)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="CloudFormation Security Scanner")
