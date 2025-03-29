@@ -173,7 +173,7 @@ def run_scanner(path, output_format, fail_on):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="CloudFormation Security Scanner")
     parser.add_argument("--path", type=str, required=True, help="Directory to scan")
-    parser.add_argument("--format", choices=["md", "json", "html"], default="md", help="Output format")
+    parser.add_argument("--format", choices=["md", "json"], default="md", help="Output format")
     parser.add_argument("--fail-on", choices=["none", "low", "medium", "high", "critical"], default="none", help="Minimum severity to fail CI")
 
     args = parser.parse_args()
