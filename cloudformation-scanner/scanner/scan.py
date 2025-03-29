@@ -75,7 +75,7 @@ def fail_based_on_severity(reports, threshold):
     for report in reports:
         for issue in report["raw_issues"]:
             raw_severity = issue.get("severity")
-            severity = raw_severity.lower() if instance(raw_severity, str) else "low"
+            severity = raw_severity.lower() if isinstance(raw_severity, str) else "low"
             if SEVERITY_PRIORITY[severity] > SEVERITY_PRIORITY[highest_severity_found]:
                 highest_severity_found = severity
 
