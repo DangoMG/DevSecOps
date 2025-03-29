@@ -1,8 +1,11 @@
 # ☁️ CloudScout – CloudFormation Security Scanner
 
-**CloudScout** is a lightweight, open-source tool that scans AWS CloudFormation templates for common misconfigurations and security risks.
+**CloudScout** is a lightweight, open-source tool that scans AWS CloudFormation templates for misconfigurations and secrets using:
 
-It uses [Checkov](https://www.checkov.io/) under the hood, and acts like a SAST tool for infrastructure — catching vulnerabilities **before your IaC ever gets deployed**.
+- ✅ [Checkov](https://www.checkov.io/) – for security misconfigurations
+- ✅ [Gitleaks](https://github.com/gitleaks/gitleaks) – for hardcoded secrets
+
+It acts like a SAST tool for infrastructure — catching vulnerabilities **before your IaC is deployed**.
 
 ---
 
@@ -13,9 +16,10 @@ It uses [Checkov](https://www.checkov.io/) under the hood, and acts like a SAST 
   - Public S3 buckets
   - Wildcard IAM permissions
   - Unencrypted resources
-- Explains **why the issue matters**
-- Provides **remediation guidance** with doc links
-- Outputs a Markdown report, suitable for PR reviews and CI pipelines
+- Explains **why it matters** + how to fix it
+- Scans for **secrets** like AWS keys, tokens, passwords
+- Outputs a clean Markdown report for devs or CI/CD
+- Exits with an error code if critical issues or secrets are found
 
 ---
 
@@ -26,10 +30,3 @@ python cloudformation-scanner/scanner/scan.py \
   --path cloudformation-scanner/templates \
   --format md \
   --fail-on high
-```
-
-## Quick Start
-git clone ...
-cd DevSecOps
-chmod +x scan.py
-./scan.py --path my-templates
