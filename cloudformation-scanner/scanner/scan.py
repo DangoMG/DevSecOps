@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 import subprocess
 import json
@@ -5,6 +6,7 @@ from datetime import datetime
 import argparse
 import sys
 from remediations import REMEDIATION_LIBRARY
+from html_report import generate_html
 
 SEVERITY_PRIORITY = {
     "none": 0,
@@ -147,6 +149,9 @@ def run_scanner(path, output_format, fail_on):
         md_path = os.path.join(result_dir, "scan_summary.md")
         write_markdown_summary(scan_summaries, md_path, secrets)
         print(f"\n✅ Markdown report saved to: {md_path}\n")
+    elif output_format == "html":
+        html_path = os.path.join(result_dir, "scan_report.html")
+        generate_html(scan_summaries, secrets, html_path)
     else:
         print(json.dumps({"misconfigs": scan_summaries, "secrets": secrets}, indent=2))
 
@@ -155,7 +160,7 @@ def run_scanner(path, output_format, fail_on):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="CloudFormation Security Scanner")
     parser.add_argument("--path", type=str, required=True, help="Directory to scan")
-    parser.add_argument("--format", choices=["md", "json"], default="md", help="Output format")
+    parser.add_argument("--format", choices=["md", "json", "html"], default="md", help="Output format")
     parser.add_argument("--fail-on", choices=["none", "low", "medium", "high", "critical"], default="none", help="Minimum severity to fail CI")
 
     args = parser.parse_args()
