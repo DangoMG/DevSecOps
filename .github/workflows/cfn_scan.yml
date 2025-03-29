@@ -21,10 +21,15 @@ jobs:
     - name: 📥 Install Checkov & dependencies
       run: pip install -r cloudformation-scanner/requirements.txt
 
+    - name: 🧪 Debug: Show working directory + files
+      run: |
+        echo "Working directory: $(pwd)"
+        ls -R
+
     - name: 🔍 Run CloudScout Scan
       run: |
         python cloudformation-scanner/scanner/scan.py \
-          --path cloudformation-scanner/templates \
+          --path $GITHUB_WORKSPACE/cloudformation-scanner/templates \
           --format md \
           --fail-on high
       continue-on-error: true
