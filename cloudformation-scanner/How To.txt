@@ -28,6 +28,13 @@ python scanner/scan.py
   --fail-on high
 12) Check Results <CLI > cd ~/DevSecOps/cloudformation-scanner/results/{output_file}
 
+------------------------------
+--- Updating Repo in Linux ---
+------------------------------
+1) CLI > git stash
+2) CLI > git pull origin main
+3) CLI > git stash pop
+
 ----------------------------
 --- Using Personal Files ---
 ----------------------------
