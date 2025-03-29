@@ -1,0 +1,24 @@
+name: CloudFormation Security Scan
+
+on:
+  push:
+    paths:
+      - 'cloudformation-scanner/**'
+
+jobs:
+  checkov-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Checkov
+      run: pip install -r cloudformation-scanner/requirements.txt
+
+    - name: Run Checkov Scan
+      run: python cloudformation-scanner/scanner/scan.py
