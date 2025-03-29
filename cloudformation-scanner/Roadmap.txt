@@ -1,0 +1,11 @@
+✅ Layer	Description	Status
+Update: 3/29/2025
+Layer 0	Project repo + README scaffold	✅ Complete
+Layer 1	Misconfig Scanner w/ Checkov + Remediation Engine	✅ Complete
+Layer 2	Secrets Scanner w/ Gitleaks + merged reporting	✅ Complete
+Layer 3	HTML Report Output + Visuals (Charts, Collapsible Sections)	🔜 Not Started
+Layer 4	Dockerized CLI Tool (portable use in any CI system)	🔜 Not Started
+Layer 5	CI/CD Integration Templates (GitHub Actions, GitLab CI, Jenkins)	🔜 Not Started
+Layer 6	Terraform + TFSec + Multi-IaC Support	🔜 Not Started
+Layer 7	Compliance Enforcement w/ Open Policy Agent (OPA)	🔜 Not Started
+Layer 8	SaaS-ify: Web UI, Upload Scan, API, Dashboards	🔜 Future Vision
