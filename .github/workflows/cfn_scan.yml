@@ -28,3 +28,6 @@ jobs:
           --format md \
           --fail-on high
       continue-on-error: true
+
+    -name: 🧪 Debug: List files
+      run: ls -R cloudformation-scanner/
