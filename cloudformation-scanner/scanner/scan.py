@@ -4,21 +4,7 @@ import json
 from datetime import datetime
 import argparse
 import sys
-
-CRITICAL_CHECKS = {
-    "CKV_AWS_21": {
-        "title": "S3 Bucket has public read permissions",
-        "why": "Public buckets can expose sensitive data to the entire internet.",
-        "remediation": "Set 'AccessControl' to 'Private' or configure bucket policies to restrict access.",
-        "doc": "https://docs.bridgecrew.io/docs/s3_1-enable-bucket-private-acl"
-    },
-    "CKV_AWS_57": {
-        "title": "IAM role allows wildcard (*) actions",
-        "why": "Wildcard permissions are overly permissive and create significant risk.",
-        "remediation": "Limit IAM permissions to specific actions and resources.",
-        "doc": "https://docs.bridgecrew.io/docs/iam_4-no-wildcard-actions"
-    }
-}
+from remediations import REMEDIATION_LIBRARY
 
 SEVERITY_PRIORITY = {
     "none": 0,
@@ -49,7 +35,7 @@ def summarize_scan(json_file):
 
     for result in data.get("results", {}).get("failed_checks", []):
         check_id = result.get("check_id")
-        details = CRITICAL_CHECKS.get(check_id)
+        details = REMEDIATION_LIBRARY.get(check_id)
         if details:
             critical_hits.append({
                 "check_id": check_id,
@@ -58,6 +44,15 @@ def summarize_scan(json_file):
                 "why": details["why"],
                 "remediation": details["remediation"],
                 "doc": details["doc"]
+            })
+        else:
+            critical_hits.append({
+                "check_id": check_id,
+                "resource": result.get("resource"),
+                "title": result.get("check_name"),
+                "why": "No explanation available.",
+                "remediation": "Review the rule and secure configuration accordingly.",
+                "doc": "https://docs.bridgecrew.io"
             })
 
     return {
@@ -73,9 +68,9 @@ def write_markdown_summary(reports, output_path):
         f.write("# ☁️ CloudFormation Security Scan Report\n\n")
         f.write("## ✅ Summary Table\n\n")
         f.write("| File | Passed | Failed | Critical Issues |\n")
-        f.write("| ---- | ------ | ------ | --------------- |\n")
+        f.write("|------|--------|--------|------------------|\n")
         for report in reports:
-            f.write(f" |  {report['file']}  |  {report['passed']}  |  {report['failed']}  |  {len(report['critical_issues'])}  |\n")
+            f.write(f"| {report['file']} | {report['passed']} | {report['failed']} | {len(report['critical_issues'])} |\n")
 
         f.write("\n---\n\n")
         f.write("## 🚨 Critical Findings with Remediation\n\n")
