@@ -1,41 +1,28 @@
-# ☁️ CloudFormation Security Scanner
+# ☁️ CloudScout – CloudFormation Security Scanner
 
-Scans AWS CloudFormation templates for common security issues using [Checkov](https://www.checkov.io/).
-This is for IaC scanning for prelim scanning during development to find vulnerabilities (SAST, if you will!)
+**CloudScout** is a lightweight, open-source tool that scans AWS CloudFormation templates for common misconfigurations and security risks.
 
-## 🔧 Usage
+It uses [Checkov](https://www.checkov.io/) under the hood, and acts like a SAST tool for infrastructure — catching vulnerabilities **before your IaC ever gets deployed**.
+
+---
+
+## 🧠 What It Does
+
+- Scans `.yaml` / `.json` CloudFormation templates
+- Flags critical issues like:
+  - Public S3 buckets
+  - Wildcard IAM permissions
+  - Unencrypted resources
+- Explains **why the issue matters**
+- Provides **remediation guidance** with doc links
+- Outputs a Markdown report, suitable for PR reviews and CI pipelines
+
+---
+
+## 🚀 Quick Usage
 
 ```bash
-python scanner/scan.py
-
-```
---------------------
---- Installation ---
---------------------
-1) Download into Linux <CLI > https://{token}@github.com/DangoMG/DevSecOps.git>
-2) If Failed, Use: <CLI > git clone https://github.come/DangoMG/DevSecOps.git>
-3) Install Checkv <CLI > pip install checkov>
-4) Install Rust <CLI > curl https://sh.rustup.rs -sSf | sh>
-5) Verify Rust Installed <CLI > source $HOME/.cargo/env>
-6) Use <CLI > python3 -m venv venv>
-7) Then, <CLI > source venv/bin/activate>
-8) Then, Install Dependencies <CLI > pip install -r ~/DevSecOps/cloudformation-scanner/requirements.txt>
-9) Change Dirs to DevSecOps <CLI > ~/DevSecOps>
-10) Use Scanner (Copy + Paste Below)
-11) <CLI > python cloudformation-scanner/scanner/scan.py \
+python cloudformation-scanner/scanner/scan.py \
   --path cloudformation-scanner/templates \
   --format md \
   --fail-on high
-12) Check Results <CLI > cd ~/DevSecOps/cloudformation-scanner/results/{output_file}
-
-----------------------------
---- Using Personal Files ---
-----------------------------
-1) To Use Personal Files, Set in Path:
-   <CLI > --path ~/DevSecOps/path/to/file/to/scan>
-2) Then, Run Script with Updated Path
-<CLI > python cloudformation-scanner/scanner/scan.py \
-  --path ~/DevSecOps/path/to/file/to/scan \
-  --format md \
-  --fail-on high
-Good Luck!
