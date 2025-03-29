@@ -63,7 +63,21 @@ def summarize_scan(json_file):
         "raw_issues": data.get("results", {}).get("failed_checks", [])
     }
 
-def write_markdown_summary(reports, output_path):
+def run_gitleaks(path, output_dir):
+    secrets_file = os.path.join(output_dir, "gitleaks_report.json")
+    result = subprocess.run(
+        ["gitleaks", "detect", "--source", path, "--report-format", "json", "--report-path", secrets_file],
+        capture_output=True,
+        text=True
+    )
+    try:
+        with open(secrets_file) as f:
+            secrets = json.load(f)
+    except json.JSONDecodeError:
+        secrets = []
+    return secrets
+
+def write_markdown_summary(reports, output_path, secrets):
     with open(output_path, "w") as f:
         f.write("# ☁️ CloudFormation Security Scan Report\n\n")
         f.write("## ✅ Summary Table\n\n")
@@ -83,7 +97,15 @@ def write_markdown_summary(reports, output_path):
                 f.write(f"- **Remediation**: {issue['remediation']}\n")
                 f.write(f"- **Docs**: [View]({issue['doc']})\n\n")
 
-def fail_based_on_severity(reports, threshold):
+        f.write("\n---\n\n")
+        f.write("## 🔐 Secrets Found (via Gitleaks)\n\n")
+        if secrets:
+            for s in secrets:
+                f.write(f"- **File**: `{s.get('file')}` | **Secret Type**: `{s.get('rule')}` | **Line**: {s.get('line')}, **Commit**: {s.get('commit')[:7]}\n")
+        else:
+            f.write("No secrets detected.\n")
+
+def fail_based_on_severity(reports, threshold, secrets):
     highest_severity_found = "none"
 
     for report in reports:
@@ -92,6 +114,10 @@ def fail_based_on_severity(reports, threshold):
             severity = raw_severity.lower() if isinstance(raw_severity, str) else "low"
             if SEVERITY_PRIORITY[severity] > SEVERITY_PRIORITY[highest_severity_found]:
                 highest_severity_found = severity
+
+    if secrets:
+        print(f"❌ Failing scan due to {len(secrets)} secret(s) detected by Gitleaks.")
+        sys.exit(1)
 
     if SEVERITY_PRIORITY[highest_severity_found] >= SEVERITY_PRIORITY[threshold]:
         print(f"❌ Failing scan due to '{highest_severity_found}' issue found (threshold: {threshold})")
@@ -114,14 +140,17 @@ def run_scanner(path, output_format, fail_on):
                 summary = summarize_scan(report_json)
                 scan_summaries.append(summary)
 
+    print("\n🔐 Running Gitleaks for secrets scanning...\n")
+    secrets = run_gitleaks(path, result_dir)
+
     if output_format == "md":
         md_path = os.path.join(result_dir, "scan_summary.md")
-        write_markdown_summary(scan_summaries, md_path)
+        write_markdown_summary(scan_summaries, md_path, secrets)
         print(f"\n✅ Markdown report saved to: {md_path}\n")
     else:
-        print(json.dumps(scan_summaries, indent=2))
+        print(json.dumps({"misconfigs": scan_summaries, "secrets": secrets}, indent=2))
 
-    fail_based_on_severity(scan_summaries, fail_on)
+    fail_based_on_severity(scan_summaries, fail_on, secrets)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="CloudFormation Security Scanner")
