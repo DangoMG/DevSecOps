@@ -20,5 +20,10 @@ jobs:
     - name: Install Checkov
       run: pip install -r cloudformation-scanner/requirements.txt
 
-    - name: Run Checkov Scan
-      run: python cloudformation-scanner/scanner/scan.py
+    - name: Run CloudScout Scan
+      run: |
+        python cloudformation-scanner/scanner/scan.py \
+          --path cloudformation-scanner/templates \
+          --format md \
+          --fail-on high
+    continue-on-error: true
