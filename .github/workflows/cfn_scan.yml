@@ -10,20 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: 📦 Checkout repository
+      uses: actions/checkout@v3
 
-    - name: Set up Python
+    - name: 🐍 Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
-    - name: Install Checkov
+    - name: 📥 Install Checkov & dependencies
       run: pip install -r cloudformation-scanner/requirements.txt
 
-    - name: Run CloudScout Scan
+    - name: 🔍 Run CloudScout Scan
       run: |
         python cloudformation-scanner/scanner/scan.py \
           --path cloudformation-scanner/templates \
           --format md \
           --fail-on high
-    continue-on-error: true
+      continue-on-error: true
