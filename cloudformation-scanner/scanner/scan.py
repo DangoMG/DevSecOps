@@ -155,18 +155,20 @@ def run_scanner(path, output_format, fail_on):
     print("\n🔐 Running Gitleaks for secrets scanning...\n")
     secrets = run_gitleaks(path, result_dir)
 
+    # Always generate HTML report silently
+    html_path = os.path.join(result_dir, "scan_report.html")
+    generate_html(scan_summaries, secrets, html_path)
+    print(f"✅ HTML report saved to: {html_path}")
+
+    # Conditionally generate and print Markdown or JSON to terminal
     if output_format == "md":
         md_path = os.path.join(result_dir, "scan_summary.md")
         write_markdown_summary(scan_summaries, md_path, secrets)
-        print(f"\n✅ Markdown report saved to: {md_path}\n")
-    elif output_format == "html":
-        html_path = os.path.join(result_dir, "scan_report.html")
-        generate_html(scan_summaries, secrets, html_path)
-    else:
+        print(f"✅ Markdown report saved to: {md_path}\n")
+    elif output_format == "json":
         print(json.dumps({"misconfigs": scan_summaries, "secrets": secrets}, indent=2))
 
     fail_based_on_severity(scan_summaries, fail_on, secrets)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="CloudFormation Security Scanner")
