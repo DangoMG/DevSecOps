@@ -26,3 +26,10 @@ python cloudformation-scanner/scanner/scan.py \
   --path cloudformation-scanner/templates \
   --format md \
   --fail-on high
+```
+
+## Quick Start
+git clone ...
+cd DevSecOps
+chmod +x scan.py
+./scan.py --path my-templates
