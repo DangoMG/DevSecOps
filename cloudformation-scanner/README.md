@@ -13,6 +13,7 @@ python scanner/scan.py
 --- Installation ---
 --------------------
 1) Download into Linux <CLI > https://{token}@github.com/DangoMG/DevSecOps.git>
+2) If Failed, Use: <CLI > git clone https://github.come/DangoMG/DevSecOps.git>
 3) Install Checkv <CLI > pip install checkov>
 4) Install Rust <CLI > curl https://sh.rustup.rs -sSf | sh>
 5) Verify Rust Installed <CLI > source $HOME/.cargo/env>
@@ -27,4 +28,14 @@ python scanner/scan.py
   --fail-on high
 12) Check Results <CLI > cd ~/DevSecOps/cloudformation-scanner/results/{output_file}
 
+----------------------------
+--- Using Personal Files ---
+----------------------------
+1) To Use Personal Files, Set in Path:
+   <CLI > --path ~/DevSecOps/path/to/file/to/scan>
+2) Then, Run Script with Updated Path
+<CLI > python cloudformation-scanner/scanner/scan.py \
+  --path ~/DevSecOps/path/to/file/to/scan \
+  --format md \
+  --fail-on high
 Good Luck!
