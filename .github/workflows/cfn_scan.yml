@@ -33,4 +33,4 @@ jobs:
           --path cloudformation-scanner/templates \
           --format md \
           --fail-on high
-      continue-on-error: true
+      continue-on-error: true #test_note
