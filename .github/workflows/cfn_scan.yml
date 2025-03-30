@@ -21,12 +21,6 @@ jobs:
     - name: Install Checkov & dependencies
       run: pip install -r cloudformation-scanner/requirements.txt
 
-    - name: Debug - Show working directory and file tree
-      run: |
-        pwd
-        ls -la
-        ls -R cloudformation-scanner/
-
     - name: Run CloudScout Scan
       run: |
         python cloudformation-scanner/scanner/scan.py \
@@ -35,7 +29,7 @@ jobs:
           --fail-on high
       continue-on-error: true
 
-    - name: 📤 Upload Scan Artifacts
+    - name: Upload Scan Artifacts
       uses: actions/upload-artifact@v3
       with:
         name: cloudscout-report
@@ -43,4 +37,3 @@ jobs:
           cloudformation-scanner/results/**/*.html
           cloudformation-scanner/results/**/*.md
           cloudformation-scanner/results/**/*.json
-
