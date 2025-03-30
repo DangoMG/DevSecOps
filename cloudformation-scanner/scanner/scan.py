@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import yaml #Make sure this is imported at the top if not already
 import os
 import subprocess
 import json
@@ -33,6 +34,31 @@ def has_environment_tag(resource_props):
         if tag.get("Key") == "Environment":
             return True
     return False
+
+def run_custom_policies(template_file):
+    with open(template_file) as f:
+        try:
+            template = yaml.safe_load(f)
+        except:
+            return []
+
+    findings = []
+
+    resources = template.get("Resources", {})
+    for name, res in resources.items():
+        res_type = res.get("Type")
+        props = res.get("Properties", {})
+
+        # Custom Rule: Environment tag required
+        if not has_environment_tag(props):
+            findings.append({
+                "resource": name,
+                "rule_id": "CUST_TAG_001",
+                "message": "Missing required tag: Environment",
+                "severity": "medium"
+            })
+
+    return findings
 
 def summarize_scan(json_file):
     with open(json_file) as f:
