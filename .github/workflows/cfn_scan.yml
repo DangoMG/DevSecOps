@@ -37,3 +37,6 @@ jobs:
           cloudformation-scanner/results/**/*.html
           cloudformation-scanner/results/**/*.md
           cloudformation-scanner/results/**/*.json
+
+    - name: Confirm Args Reached
+      run: echo "Scanning ${{ github.workspace}}/cloudformation-scanner/templates"
