@@ -33,12 +33,14 @@ jobs:
           --path cloudformation-scanner/templates \
           --format md \
           --fail-on high
-      continue-on-error: true #test_note
+      continue-on-error: true
 
-    - uses: actions/upload-artifact@v3
+    - name: 📤 Upload Scan Artifacts
+      uses: actions/upload-artifact@v3
       with:
         name: cloudscout-report
         path: |
           cloudformation-scanner/results/**/*.html
           cloudformation-scanner/results/**/*.md
           cloudformation-scanner/results/**/*.json
+
