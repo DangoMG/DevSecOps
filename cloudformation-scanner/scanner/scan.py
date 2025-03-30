@@ -35,6 +35,10 @@ def has_environment_tag(resource_props):
             return True
     return False
 
+def no_temp_in_name(resource_props):
+    name = resource_props.get("RoleName") or resource_props.get("BucketName") or ""
+    return "temp" not in name.lower()
+
 def run_custom_policies(template_file):
     with open(template_file) as f:
         try:
