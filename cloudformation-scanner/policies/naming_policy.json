@@ -1,1 +1,7 @@
+{
+  "rule_id": "CUST_TAG_001",
+  "description": "All resources must contain the Environment tag.",
+  "severity": "medium",
+  "validate": "has_environment_tag"
+}
 
