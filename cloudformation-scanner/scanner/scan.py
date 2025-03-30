@@ -115,13 +115,17 @@ def run_gitleaks(path, output_dir):
 def write_markdown_summary(reports, output_path, secrets):
     with open(output_path, "w") as f:
         f.write("# ☁️ CloudFormation Security Scan Report\n\n")
+
+        # ✅ Summary Table
         f.write("## ✅ Summary Table\n\n")
-        f.write("| File | Passed | Failed | Critical Issues |\n")
-        f.write("|------|--------|--------|------------------|\n")
+        f.write("| File | Passed | Failed | Critical Issues | Custom Findings |\n")
+        f.write("|------|--------|--------|------------------|-----------------|\n")
         for report in reports:
-            f.write(f"| {report['file']} | {report['passed']} | {report['failed']} | {len(report['critical_issues'])} |\n")
+            f.write(f"| {report['file']} | {report['passed']} | {report['failed']} | {len(report['critical_issues'])} | {len(report.get('custom_findings', []))} |\n")
 
         f.write("\n---\n\n")
+
+        # 🚨 Critical Findings
         f.write("## 🚨 Critical Findings with Remediation\n\n")
         for report in reports:
             for issue in report['critical_issues']:
@@ -133,12 +137,27 @@ def write_markdown_summary(reports, output_path, secrets):
                 f.write(f"- **Docs**: [View]({issue['doc']})\n\n")
 
         f.write("\n---\n\n")
+
+        # 🧠 Custom Policy Findings
+        f.write("## 🧠 Custom Policy Findings\n\n")
+        any_custom = False
+        for report in reports:
+            for finding in report.get("custom_findings", []):
+                any_custom = True
+                f.write(f"- **[{finding['rule_id']}]** {finding['message']} on resource `{finding['resource']}` (File: `{report['file']}`)\n")
+        if not any_custom:
+            f.write("No custom policy violations found.\n")
+
+        f.write("\n---\n\n")
+
+        # 🔐 Secrets via Gitleaks
         f.write("## 🔐 Secrets Found (via Gitleaks)\n\n")
         if secrets:
             for s in secrets:
                 f.write(f"- **File**: `{s.get('file')}` | **Secret Type**: `{s.get('rule')}` | **Line**: {s.get('line')}, **Commit**: {s.get('commit')[:7]}\n")
         else:
             f.write("No secrets detected.\n")
+
 
 def fail_based_on_severity(reports, threshold, secrets):
     highest_severity_found = "none"
