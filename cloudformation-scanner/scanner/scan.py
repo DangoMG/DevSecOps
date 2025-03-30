@@ -27,6 +27,13 @@ def scan_file(file_path, output_dir):
         f.write(result.stdout)
     return output_path
 
+def has_environment_tag(resource_props):
+    tags = resource_props.get("Tags", [])
+    for tag in tags:
+        if tag.get("Key") == "Environment":
+            return True
+    return False
+
 def summarize_scan(json_file):
     with open(json_file) as f:
         data = json.load(f)
