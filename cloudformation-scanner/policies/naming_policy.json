@@ -1,7 +1,6 @@
 {
-  "rule_id": "CUST_TAG_001",
-  "description": "All resources must contain the Environment tag.",
-  "severity": "medium",
-  "validate": "has_environment_tag"
+  "rule_id": "CUST_NAME_001",
+  "description": "No IAM role or resource should use the word 'temp'.",
+  "severity": "low",
+  "validate": "no_temp_in_name"
 }
-
